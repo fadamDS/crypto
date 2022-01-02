@@ -3,18 +3,17 @@ import numpy as np
 from src.evaluation import corr_score
 
 
-# Constant Variables
+# Constants
 data_path = "data/gresearch/"
+train = pd.read_csv(data_path + 'raw/train.csv')
+train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
+asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
 
 
-def test_corr_score():
+def test_corr_score(train,asset_info):
 
     # Public LB min date
     min_date = pd.to_datetime('2021-06-13 00:00:00')
-
-    train = pd.read_csv(data_path + 'raw/train.csv')
-    train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
-    asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
 
     test_df = train[train.timestamp >= min_date].copy()
 
