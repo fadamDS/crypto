@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.evaluation import corr_score
+from src.evaluation import corr_score, purged_walked_forward_cv
 from src.utils import recreate_gresearch_target
 
 
@@ -46,3 +46,27 @@ def test_recreate_gresearch_target():
 
     # Erros sufficiently small
     np.all(abserror < 1e-13)
+
+
+def test_purged_walke_forward_cv():
+    splits = purged_walked_forward_cv(data=train,
+                                      train_size_days=90,
+                                      purge_window_days=14,
+                                      test_size_days=30,
+                                      start_date="2018-01-01 00:00:000",
+                                      dadjust=1440)
+    # Should contain something
+    assert(len(splits) > 0)
+
+    # Last equal taking into account that the last array is "incomplete"
+    assert(splits[-1][0][-1] == train.timestamp.max())
+
+    train_idx = []
+    test_idx = []
+    for i in range(len(splits)-1):
+        train_idx.append(splits[i][0])
+        test_idx.append(splits[i][1])
+
+    # No Overlap
+    assert(len(set(np.concatenate(train_idx))
+               & set(np.concatenate(test_idx))) == 0)
