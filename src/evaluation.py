@@ -76,3 +76,40 @@ def purged_walked_forward_cv(data: pd.DataFrame,
         fold += 1
 
     return splits
+
+
+def score_model(splits: list,
+                data: pd.DataFrame,
+                model,
+                asset_ids: list):
+
+    scores = []
+
+    for split in splits:
+
+        train_ts = split[0]
+        test_ts = split[1]
+        fold = split[2]
+
+        print(f'Fold {fold}')
+
+        train = data[data.timestamp.isin(train_ts)]
+        test = data[data.timestamp.isin(test_ts)]
+
+        predictions = []
+
+        # TO DO: Wrap in model class
+        # Coin based predictions
+        for asset_id in asset_ids:
+
+            coin_train = train[train.Asset_ID == asset_id]
+            coin_test = test[test.Asset_ID == asset_id]
+            model.train(coin_train)
+            predictions.append(model.predict(coin_test))
+
+        test = test.merge(pd.concat(predictions), on=[
+                          'timestamp', 'Asset_ID'], how='left').fillna(0)
+        score = corr_score(test.Target, test.prediction, test.Weight)
+        scores.append(score)
+
+    return scores
