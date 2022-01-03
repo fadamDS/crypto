@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-from src.evaluation import corr_score, purged_walked_forward_cv
+from src.evaluation import corr_score, purged_walked_forward_cv, score_model
+from src.models import BaseCryptoLearner
 from src.utils import recreate_gresearch_target
 
 
@@ -9,6 +10,7 @@ data_path = "data/gresearch/"
 train = pd.read_csv(data_path + 'raw/train.csv')
 train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
 asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
+assets = list(asset_info.Asset_ID)
 train = train.merge(asset_info[['Asset_ID', 'Weight']],
                     on='Asset_ID', how='left')
 
@@ -70,3 +72,21 @@ def test_purged_walke_forward_cv():
     # No Overlap
     assert(len(set(np.concatenate(train_idx))
                & set(np.concatenate(test_idx))) == 0)
+
+
+def test_score_model():
+
+    model = BaseCryptoLearner()
+
+    # Get splits
+    splits = purged_walked_forward_cv(data=train,
+                                      train_size_days=90,
+                                      purge_window_days=14,
+                                      test_size_days=30,
+                                      start_date="2018-01-01 00:00:000",
+                                      dadjust=1440)
+
+    scores = score_model(splits[:5], train, model, assets)
+
+    assert(len(scores) == 5)
+    assert(np.mean(scores) == -0.001038455069963497)
