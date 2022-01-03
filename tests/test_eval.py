@@ -76,7 +76,7 @@ def test_purged_walke_forward_cv():
 
 def test_score_model():
 
-    model = BaseCryptoLearner()
+    model = BaseCryptoLearner(assets=assets)
 
     # Get splits
     splits = purged_walked_forward_cv(data=train,
@@ -89,4 +89,4 @@ def test_score_model():
     scores = score_model(splits[:5], train, model, assets)
 
     assert(len(scores) == 5)
-    assert(np.mean(scores) == -0.001038455069963497)
+    assert(np.mean(scores) == -0.0008107615895345975)
