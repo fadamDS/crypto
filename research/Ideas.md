@@ -17,17 +17,14 @@
 - target is the individual return minus the beta times the market return
 - Finally: Score is weighted Pearson correlation coefficient between target and actual
 
-# General
-- Adaptive???
-- Include recent vola
-- ARMAX
 
 ## To Do's
 
 - Backtesting pipeline
-  - Simple evaluation round-> To SRC
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
-  - Market, beta, vola, ???
+  - Differences (i.e. stationary)
+  - lagged
+  - Vola
 - Set up that resulting models can be applied to submission setting
   - Simple model, e.g. ARMA?
 
