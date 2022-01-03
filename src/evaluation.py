@@ -96,19 +96,11 @@ def score_model(splits: list,
         train = data[data.timestamp.isin(train_ts)]
         test = data[data.timestamp.isin(test_ts)]
 
-        predictions = []
+        model.train(train)
+        predictions = model.predict(test)
 
-        # TO DO: Wrap in model class
-        # Coin based predictions
-        for asset_id in asset_ids:
-
-            coin_train = train[train.Asset_ID == asset_id]
-            coin_test = test[test.Asset_ID == asset_id]
-            model.train(coin_train)
-            predictions.append(model.predict(coin_test))
-
-        test = test.merge(pd.concat(predictions), on=[
-                          'timestamp', 'Asset_ID'], how='left').fillna(0)
+        test = test.merge(predictions, on=[
+                      'timestamp', 'Asset_ID'], how='left').fillna(0)
         score = corr_score(test.Target, test.prediction, test.Weight)
         scores.append(score)
 
