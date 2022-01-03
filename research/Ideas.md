@@ -23,13 +23,15 @@
 - ARMAX
 
 ## To Do's
+
 - Backtesting pipeline
-  - Check which time series splitting / validation technique to use
-  - Purged, walk forward cross validation, check purging period (minutes to months?)
-- Features
+  - Simple evaluation round-> To SRC
+- Features -> Make features on whole dataset (e.g lagged, EWMA)
   - Market, beta, vola, ???
 - Set up that resulting models can be applied to submission setting
   - Simple model, e.g. ARMA?
+
+- Adjust the missing time deltas
 
 ## Modelling
 - Ensembles of simple models
@@ -38,3 +40,4 @@
 - Some smart feature engineering!
   - Lagged features
   - Market features
+  - Modelled Vola
