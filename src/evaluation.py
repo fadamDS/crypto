@@ -69,11 +69,10 @@ def purged_walked_forward_cv(data: pd.DataFrame,
 
         train_ts = all_timestamps[train_start:train_end]
         test_ts = all_timestamps[test_start:test_end]
+        splits.append((train_ts, test_ts, fold))
 
         # Iterate train_start
         train_start = test_end
         fold += 1
-
-        splits.append((train_ts, test_ts, fold))
 
     return splits
