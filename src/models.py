@@ -10,13 +10,26 @@ class BaseCryptoLearner():
         self.assets = assets
 
     def train(self, data):
-        # Just take the target distribution median over the sample
-        self.learned_mean = np.mean(data.Target)
+        # Just take the target median over the sample for each coin
+        for asset in self.assets:
+            mean = np.mean(data[data.Asset_ID == asset].Target)
+            if np.isnan(mean):
+                mean = 0
+            self.learned_mean[asset] = mean
 
-    def predict(self, X):  # Should always be with (AssetID & Timestamp)
+    def predict(self, X):
+        # Should always be with (AssetID & Timestamp)
         # Predict the learned mean
-        pred = pd.DataFrame({'Asset_ID': X.Asset_ID,
-                             'timestamp': X.timestamp})
-        pred['prediction'] = np.repeat(self.learned_mean, repeats=X.shape[0])
+        self.predictions = []
+        for asset in self.assets:
 
-        return pred
+            pred = pd.DataFrame({'Asset_ID': asset,
+                                 'timestamp': X.timestamp})
+
+            pred['prediction'] = np.repeat(
+                self.learned_mean[asset], repeats=X.shape[0])
+            self.predictions.append(pred)
+
+        self.predictions_df = pd.concat(self.predictions)
+
+        return self.predictions_df
