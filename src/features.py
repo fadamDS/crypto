@@ -12,3 +12,18 @@ def ohlcv_features(asset):
     features['high_low_ratio'] = asset.High / asset.Low
 
     return features
+
+
+def relative_features(asset, feature_cols, period):
+
+    log_change_colnames = ['log_change_' + feature
+                           + '_' + str(period) + 'min' for feature in feature_cols]
+    rel_change_colnames = ['rel_change_' + feature
+                           + '_' + str(period) + 'min' for feature in feature_cols]
+
+    log_changes = np.log(asset[feature_cols] / asset[feature_cols].shift(
+        period)).rename(columns=dict(zip(feature_cols, log_change_colnames)))
+    rel_changes = (asset[feature_cols].diff(periods=period, axis=0) / asset[feature_cols].shift(
+        period)).rename(columns=dict(zip(feature_cols, rel_change_colnames)))
+
+    return log_changes, rel_changes
