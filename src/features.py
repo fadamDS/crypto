@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-def ohlcv_features(asset):
+def create_ohlcv_features(asset):
 
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
@@ -14,7 +14,7 @@ def ohlcv_features(asset):
     return features
 
 
-def relative_features(asset, feature_cols, period):
+def create_relative_features(asset, feature_cols, period):
 
     log_change_colnames = ['log_change_' + feature
                            + '_' + str(period) + 'min' for feature in feature_cols]
@@ -34,7 +34,7 @@ def relative_features(asset, feature_cols, period):
     return log_changes, rel_changes
 
 
-def lagged_features(asset, feature_cols, period):
+def create_lagged_features(asset, feature_cols, period):
 
     lagged_col_names = [
         'lag_' + str(period) + '_min_' + feature for feature in feature_cols]

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.features import ohlcv_features, relative_features, lagged_features
+from src.features import create_ohlcv_features, create_relative_features, create_lagged_features
 
 
 # Constants
@@ -20,7 +20,7 @@ def test_ohlcv_features():
 
     asset = train[train.Asset_ID == 1].sort_values('timestamp')
 
-    features = ohlcv_features(asset)
+    features = create_ohlcv_features(asset)
 
     assert(features.direct_return.values[0] == (
         (asset.Close - asset.Open) / asset.Open).values[0])
@@ -40,9 +40,9 @@ def test_relative_feature():
 
     for period in [1, 10, 30]:
 
-        log_changes, rel_changes = relative_features(asset,
-                                                     feature_cols,
-                                                     period)
+        log_changes, rel_changes = create_relative_features(asset,
+                                                            feature_cols,
+                                                            period)
 
         # Check relative changes
         test_case_1 = ((asset[feature_cols].iloc[period]
@@ -67,7 +67,7 @@ def test_lagged_features():
 
     for period in [1, 10, 30]:
 
-        features = lagged_features(asset, feature_cols, period)
+        features = create_lagged_features(asset, feature_cols, period)
         same = (features.iloc[period, :
-                             - 2].values == asset[feature_cols].iloc[0].values)
+                              - 2].values == asset[feature_cols].iloc[0].values)
         assert(all(same))
