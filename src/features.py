@@ -98,4 +98,5 @@ def engineer_all_features(asset):
         features = features.merge(lagged_features,
                                   on=['timestamp', 'Asset_ID'],
                                   how='left')
+
     return features, features.columns[2:]

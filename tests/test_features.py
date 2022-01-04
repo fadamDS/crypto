@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
-from src.features import create_ohlcv_features, create_relative_features, create_lagged_features
+from src.features import (create_ohlcv_features,
+                          create_relative_features,
+                          create_lagged_features,
+                          engineer_all_features)
 
 
 # Constants
@@ -71,3 +74,16 @@ def test_lagged_features():
         same = (features.iloc[period, :
                               - 2].values == asset[feature_cols].iloc[0].values)
         assert(all(same))
+
+
+def test_engineer_all_features():
+
+    asset = train[train.Asset_ID == 1]
+
+    features, _ = engineer_all_features(asset)
+
+    # Same length
+    assert(features.shape[0] == asset.shape[0])
+
+    # Same timestamps
+    assert(all(asset.timestamp.values == features.timestamp.values))
