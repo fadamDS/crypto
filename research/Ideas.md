@@ -20,13 +20,17 @@
 
 ## To Do's
 
-- Backtesting pipeline
+- Pipeline
+  - Full training data creation
+  - Try modelling on one split.
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
-  - Differences (i.e. stationary)
-  - lagged
   - Vola
+  - Rolling averages etc.
+- Model
+  - Single model vs. model for each coin
+  - boosting
+  - Simple model, e.g. ARMA
 - Set up that resulting models can be applied to submission setting
-  - Simple model, e.g. ARMA?
 
 - Adjust the missing time deltas
 
