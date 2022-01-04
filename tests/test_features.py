@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.features import ohlcv_features, relative_features
+from src.features import ohlcv_features, relative_features, lagged_features
 
 
 # Constants
@@ -46,11 +46,28 @@ def test_relative_feature():
 
         # Check relative changes
         test_case_1 = ((asset[feature_cols].iloc[period]
-                        - asset[feature_cols].iloc[0]) / asset[feature_cols].iloc[0])
-        assert(all(rel_changes.iloc[period, :-2].values == test_case_1.values))
+                        - asset[feature_cols].iloc[0])
+                       / asset[feature_cols].iloc[0])
+        same = rel_changes.iloc[period, :-2].values == test_case_1.values
+        assert(all(same))
 
         # Check log changes
         test_case_2 = np.log(
-            asset[feature_cols].iloc[period] / asset[feature_cols].iloc[0])
-        assert(all(log_changes.iloc[period,
-                                    :-2].values == test_case_2.values))
+                          asset[feature_cols].iloc[period]
+                          / asset[feature_cols].iloc[0])
+        same = log_changes.iloc[period, :-2].values == test_case_2.values
+        assert(all(same))
+
+
+def test_lagged_features():
+
+    asset = train[train.Asset_ID == 1].sort_values('timestamp')
+
+    feature_cols = ['Count', 'Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']
+
+    for period in [1, 10, 30]:
+
+        features = lagged_features(asset, feature_cols, period)
+        same = (features.iloc[period, :
+                             - 2].values == asset[feature_cols].iloc[0].values)
+        assert(all(same))
