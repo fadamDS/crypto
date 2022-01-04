@@ -47,9 +47,10 @@ def test_relative_feature():
         # Check relative changes
         test_case_1 = ((asset[feature_cols].iloc[period]
                         - asset[feature_cols].iloc[0]) / asset[feature_cols].iloc[0])
-        assert(all(rel_changes.iloc[period].values == test_case_1.values))
+        assert(all(rel_changes.iloc[period, :-2].values == test_case_1.values))
 
         # Check log changes
         test_case_2 = np.log(
             asset[feature_cols].iloc[period] / asset[feature_cols].iloc[0])
-        assert(all(log_changes.iloc[period].values == test_case_2.values))
+        assert(all(log_changes.iloc[period,
+                                    :-2].values == test_case_2.values))
