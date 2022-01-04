@@ -53,6 +53,11 @@ def create_lagged_features(asset, feature_cols, period):
 
 def engineer_features(asset):
 
+    # Ensure sorting
+    asset = asset.sort_values('timestamp')
+    assert(
+        all((asset.timestamp.diff() > pd.to_timedelta('00:00:00')).values[1:]))
+
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
 
