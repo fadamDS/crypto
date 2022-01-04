@@ -26,4 +26,9 @@ def relative_features(asset, feature_cols, period):
     rel_changes = (asset[feature_cols].diff(periods=period, axis=0) / asset[feature_cols].shift(
         period)).rename(columns=dict(zip(feature_cols, rel_change_colnames)))
 
+    log_changes['timestamp'] = asset.timestamp
+    log_changes['Asset_ID'] = asset.Asset_ID
+    rel_changes['timestamp'] = asset.timestamp
+    rel_changes['Asset_ID'] = asset.Asset_ID
+
     return log_changes, rel_changes
