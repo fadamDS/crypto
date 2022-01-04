@@ -28,4 +28,5 @@ def test_ohlcv_features():
     assert(features.log_return.values[0] == (
         np.log(asset.Close / asset.Open)).values[0])
 
-    assert(features.high_low_ratio.values[0] == (asset.High / asset.Low).values[0])
+    assert(features.high_low_ratio.values[0] == (
+        asset.High / asset.Low).values[0])
