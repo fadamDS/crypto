@@ -15,7 +15,7 @@ def create_ohlcv_features(asset):
 
 
 def create_relative_features(asset, feature_cols, period):
-    assert(period>0)
+    assert(period > 0)
 
     log_change_colnames = ['log_change_' + feature
                            + '_' + str(period) + 'min' for feature in feature_cols]
@@ -37,7 +37,7 @@ def create_relative_features(asset, feature_cols, period):
 
 
 def create_lagged_features(asset, feature_cols, period):
-    assert(period>0)
+    assert(period > 0)
     lagged_col_names = [
         'lag_' + str(period) + '_min_' + feature for feature in feature_cols]
 
