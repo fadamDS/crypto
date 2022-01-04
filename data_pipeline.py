@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from src.features import engineer_all_features
 from src.evaluation import purged_walked_forward_cv
@@ -27,7 +28,18 @@ def main(head_path='../data/gresearch/',
                       on='Asset_ID',
                       how='left')[col_order]
 
+    # Get splits
+    print('Getting Splits')
+    splits = purged_walked_forward_cv(data,
+                                      train_size_days=90,
+                                      purge_window_days=7,
+                                      test_size_days=40,
+                                      start_date="2018-01-01 00:00:000",
+                                      dadjust=1440)
+
     asset_ids = asset_info.Asset_ID.values
+
+    processed_path = head_path + 'processed/'
 
     for asset_id in asset_ids:
 
@@ -39,10 +51,32 @@ def main(head_path='../data/gresearch/',
 
         features, _ = engineer_all_features(asset)
 
-        training_data = asset.merge(features, on=['timestamp', 'Asset_ID'])
+        asset_full = asset.merge(features,
+                                 on=['timestamp', 'Asset_ID'])
 
         # To Pickle
-        training_data.to_pickle(f'{head_path}/processed/{asset_name}.pkl')
+        asset_full.to_pickle(f'{processed_path}/full/{asset_name}.pkl')
+
+        # Save splits
+        print(f'Writing splits for {asset_name}')
+        for split in splits:
+            train_ts = split[0]
+            test_ts = split[1]
+            fold = split[2]
+
+            train_df = asset_full[asset_full.timestamp.isin(train_ts)]
+            test_df = asset_full[asset_full.timestamp.isin(test_ts)]
+
+            # Directory
+            fold_path = f'{processed_path}/fold_{fold}'
+            if not os.path.exists(fold_path):
+                os.makedirs(fold_path)
+                os.makedirs(fold_path + '/train')
+                os.makedirs(fold_path + '/test')
+
+            # Save Full Data
+            train_df.to_pickle(f'{fold_path}/train/{asset_name}.pkl')
+            test_df.to_pickle(f'{fold_path}/test/{asset_name}.pkl')
 
 
 if __name__ == '__main__':
