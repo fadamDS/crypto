@@ -47,3 +47,48 @@ def create_lagged_features(asset, feature_cols, period):
     lagged_features['Asset_ID'] = asset.Asset_ID
 
     return lagged_features
+
+
+def engineer_features(asset):
+
+    features = pd.DataFrame({'timestamp': asset.timestamp,
+                             'Asset_ID': asset.Asset_ID})
+
+    ohlcv_features = create_ohlcv_features(asset)
+
+    features = features.merge(ohlcv_features,
+                              on=['timestamp', 'Asset_ID'],
+                              how='left')
+
+    relative_cols = ['Count', 'Open', 'High', 'Low', 'Close',
+                     'Volume', 'VWAP', 'Target']
+    for period in [1, 10, 30, 60]:
+
+        log_features, rel_features = create_relative_features(asset,
+                                                              feature_cols=relative_cols,
+                                                              period=period)
+
+        features = features.merge(log_features,
+                                  on=['timestamp', 'Asset_ID'],
+                                  how='left')
+
+        features = features.merge(rel_features,
+                                  on=['timestamp', 'Asset_ID'],
+                                  how='left')
+    # lagged features
+    lagged_cols = ["direct_return", "direct_return", "high_low_ratio",
+                   'log_change_Count_1min', 'log_change_Open_1min',
+                   'log_change_High_1min', 'log_change_Low_1min',
+                   'log_change_Close_1min',
+                   'log_change_Volume_1min', 'log_change_VWAP_1min',
+                   'log_change_Target_1min']
+
+    for period in [1, 2, 3, 4, 5]:
+        lagged_features = create_lagged_features(features,
+                                                 feature_cols=lagged_cols,
+                                                 period=period)
+
+        features = features.merge(lagged_features,
+                                  on=['timestamp', 'Asset_ID'],
+                                  how='left')
+    return features, features.columns[2:]
