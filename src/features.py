@@ -72,7 +72,7 @@ def engineer_features(asset):
     for period in [1, 10, 30, 60]:
 
         log_features, rel_features = create_relative_features(asset,
-                                                              feature_cols=relative_cols,
+                                                              relative_cols,
                                                               period=period)
 
         features = features.merge(log_features,
