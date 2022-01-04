@@ -32,3 +32,18 @@ def relative_features(asset, feature_cols, period):
     rel_changes['Asset_ID'] = asset.Asset_ID
 
     return log_changes, rel_changes
+
+
+def lagged_features(asset, feature_cols, period):
+
+    lagged_col_names = [
+        'lag_' + str(period) + '_min_' + feature for feature in feature_cols]
+
+    lagged_features = asset[feature_cols].shift(period)
+    lagged_features = lagged_features.rename(
+        columns=dict(zip(feature_cols, lagged_col_names)))
+
+    lagged_features['timestamp'] = asset.timestamp
+    lagged_features['Asset_ID'] = asset.Asset_ID
+
+    return lagged_features
