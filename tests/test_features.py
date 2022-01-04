@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.features import ohlcv_features
+from src.features import ohlcv_features, relative_features
 
 
 # Constants
@@ -30,3 +30,26 @@ def test_ohlcv_features():
 
     assert(features.high_low_ratio.values[0] == (
         asset.High / asset.Low).values[0])
+
+
+def test_relative_feature():
+
+    asset = train[train.Asset_ID == 1].sort_values('timestamp')
+
+    feature_cols = ['Count', 'Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']
+
+    for period in [1, 10, 30]:
+
+        log_changes, rel_changes = relative_features(asset,
+                                                     feature_cols,
+                                                     period)
+
+        # Check relative changes
+        test_case_1 = ((asset[feature_cols].iloc[period]
+                        - asset[feature_cols].iloc[0]) / asset[feature_cols].iloc[0])
+        assert(all(rel_changes.iloc[period].values == test_case_1.values))
+
+        # Check log changes
+        test_case_2 = np.log(
+            asset[feature_cols].iloc[period] / asset[feature_cols].iloc[0])
+        assert(all(log_changes.iloc[period].values == test_case_2.values))
