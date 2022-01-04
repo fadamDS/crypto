@@ -6,13 +6,16 @@ from src.utils import recreate_gresearch_target
 
 
 # Constants
+col_order = ['Target', 'Weight', 'timestamp', 'Asset_ID', 'Count', 'Open', 'High',
+             'Low', 'Close', 'Volume', 'VWAP']
+
 data_path = "data/gresearch/"
 train = pd.read_csv(data_path + 'raw/train.csv')
 train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
 asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
 assets = list(asset_info.Asset_ID)
 train = train.merge(asset_info[['Asset_ID', 'Weight']],
-                    on='Asset_ID', how='left')
+                    on='Asset_ID', how='left')[col_order]
 
 
 def test_corr_score():
