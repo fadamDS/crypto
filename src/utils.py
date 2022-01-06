@@ -1,6 +1,7 @@
 # Data Utils
 import pandas as pd
 import numpy as np
+import os
 
 klines_colnames = ['openTime', 'open', 'high',
                    'low', 'close', 'volume',
@@ -59,5 +60,16 @@ def recreate_gresearch_target(data: pd.DataFrame, asset_info: pd.DataFrame,
                  'variable': 'Asset_ID',
                  'value': 'recon_Target'})
     data = data.merge(recon_targets, on=['Asset_ID', 'timestamp'])
+
+    return data
+
+
+def load_fold(data_dir):
+
+    pickles = os.listdir(data_dir)
+    data = []
+    for pkl in pickles:
+        if pkl[-3:] == 'pkl':
+            data.append(pd.read_pickle(data_dir + pkl))
 
     return data
