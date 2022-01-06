@@ -61,11 +61,6 @@ def engineer_all_features(asset):
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
 
-    # Lag Target by one (for relative target changes)
-    target_lagged = create_lagged_features(asset, ['Target'], period=1)
-    asset = asset.merge(target_lagged, on=['timestamp', 'Asset_ID']).rename(
-        columns={"lag_1_min_Target": 'prev_target'})
-
     ohlcv_features = create_ohlcv_features(asset)
 
     features = features.merge(ohlcv_features,
@@ -95,8 +90,7 @@ def engineer_all_features(asset):
                    'log_change_Count_1min', 'log_change_Open_1min',
                    'log_change_High_1min', 'log_change_Low_1min',
                    'log_change_Close_1min',
-                   'log_change_Volume_1min', 'log_change_VWAP_1min',
-                   'log_change_prev_target_1min']
+                   'log_change_Volume_1min', 'log_change_VWAP_1min']
 
     for period in [1, 2, 3, 4, 5]:
         lagged_features = create_lagged_features(features,
