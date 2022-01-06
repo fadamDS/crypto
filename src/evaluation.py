@@ -78,30 +78,14 @@ def purged_walked_forward_cv(data: pd.DataFrame,
     return splits
 
 
-def score_model(splits: list,
-                data: pd.DataFrame,
-                model,
-                asset_ids: list):
+def score_model(test_df: pd.DataFrame,
+                model):
 
-    scores = []
+    pred = model.predict(test_df)
 
-    for split in splits:
+    test = test_df[['Target', 'Weight', 'timestamp', 'Asset_ID']].merge(
+        pred, on=['timestamp', 'Asset_ID'], how='left').fillna(0)
 
-        train_ts = split[0]
-        test_ts = split[1]
-        fold = split[2]
+    score = corr_score(test.Target, test.prediction, test.Weight)
 
-        print(f'Fold {fold}')
-
-        train = data[data.timestamp.isin(train_ts)]
-        test = data[data.timestamp.isin(test_ts)]
-
-        model.train(train)
-        predictions = model.predict(test)
-
-        test = test.merge(predictions, on=[
-                      'timestamp', 'Asset_ID'], how='left').fillna(0)
-        score = corr_score(test.Target, test.prediction, test.Weight)
-        scores.append(score)
-
-    return scores
+    return score

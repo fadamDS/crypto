@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from src.evaluation import corr_score, purged_walked_forward_cv, score_model
 from src.models import BaseCryptoLearner
-from src.utils import recreate_gresearch_target
+from src.utils import recreate_gresearch_target, load_fold
 
 
 # Constants
@@ -79,17 +79,12 @@ def test_purged_walke_forward_cv():
 
 def test_score_model():
 
-    model = BaseCryptoLearner(assets=assets)
+    train_df = load_fold(data_path + 'processed/fold_1/train/')
+    test_df = load_fold(data_path + 'processed/fold_1/test/')
 
-    # Get splits
-    splits = purged_walked_forward_cv(data=train,
-                                      train_size_days=90,
-                                      purge_window_days=14,
-                                      test_size_days=30,
-                                      start_date="2018-01-01 00:00:000",
-                                      dadjust=1440)
+    base_model = BaseCryptoLearner(assets=test_df.Asset_ID.unique())
+    base_model.train(train_df)
 
-    scores = score_model(splits[:5], train, model, assets)
+    score = score_model(test_df, base_model)
 
-    assert(len(scores) == 5)
-    assert(np.mean(scores) == -0.0008107615895345975)
+    assert(score == -0.0031253889651972947)
