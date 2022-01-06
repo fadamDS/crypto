@@ -9,6 +9,8 @@ klines_colnames = ['openTime', 'open', 'high',
                    'numberTrades', 'takerBuyBaseAssetVolume',
                    'takerBuyQuoteAssetVolume', 'Ignore']
 
+assets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+
 
 def load_klines(path, colnames):
 
@@ -71,5 +73,7 @@ def load_fold(data_dir):
     for pkl in pickles:
         if pkl[-3:] == 'pkl':
             data.append(pd.read_pickle(data_dir + pkl))
+
+    data = pd.concat(data)
 
     return data
