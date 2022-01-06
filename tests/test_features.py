@@ -7,7 +7,8 @@ from src.features import (create_ohlcv_features,
 
 
 # Constants
-col_order = ['Target', 'Weight', 'timestamp', 'Asset_ID', 'Count', 'Open', 'High',
+col_order = ['Target', 'Weight', 'timestamp',
+             'Asset_ID', 'Count', 'Open', 'High',
              'Low', 'Close', 'Volume', 'VWAP']
 
 data_path = "data/gresearch/"

@@ -6,7 +6,8 @@ from src.utils import recreate_gresearch_target, load_fold
 
 
 # Constants
-col_order = ['Target', 'Weight', 'timestamp', 'Asset_ID', 'Count', 'Open', 'High',
+col_order = ['Target', 'Weight', 'timestamp', 'Asset_ID', 'Count',
+             'Open', 'High',
              'Low', 'Close', 'Volume', 'VWAP']
 
 data_path = "data/gresearch/"
