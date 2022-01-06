@@ -61,14 +61,22 @@ def engineer_all_features(asset):
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
 
+    # Lag Target by one (for relative target changes)
+    target_lagged = create_lagged_features(asset, ['Target'], period=1)
+    asset = asset.merge(target_lagged, on=['timestamp', 'Asset_ID']).rename(
+        columns={"lag_1_min_Target": 'prev_target'})
+
     ohlcv_features = create_ohlcv_features(asset)
 
     features = features.merge(ohlcv_features,
                               on=['timestamp', 'Asset_ID'],
                               how='left')
 
-    relative_cols = ['Count', 'Open', 'High', 'Low', 'Close',
-                     'Volume', 'VWAP']
+    relative_cols = ['Count', 'Open',
+                     'High', 'Low', 'Close',
+                     'Volume', 'VWAP',
+                     'prev_target']
+
     for period in [1, 10, 30, 60]:
 
         log_features, rel_features = create_relative_features(asset,
@@ -88,7 +96,7 @@ def engineer_all_features(asset):
                    'log_change_High_1min', 'log_change_Low_1min',
                    'log_change_Close_1min',
                    'log_change_Volume_1min', 'log_change_VWAP_1min',
-                   'log_change_Target_1min']
+                   'log_change_prev_target_1min']
 
     for period in [1, 2, 3, 4, 5]:
         lagged_features = create_lagged_features(features,
