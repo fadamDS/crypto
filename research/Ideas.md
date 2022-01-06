@@ -19,9 +19,12 @@
 
 
 ## To Do's
+- Check lagged feature leakage
+
+- Set up that resulting models can be applied to submission setting
+  - LightGBM
 
 - Pipeline
-  - Full training data creation
   - Try modelling on one split.
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
   - Vola
@@ -30,7 +33,7 @@
   - Single model vs. model for each coin
   - boosting
   - Simple model, e.g. ARMA
-- Set up that resulting models can be applied to submission setting
+  - Combine models, learn jointly
 
 - Adjust the missing time deltas
 
