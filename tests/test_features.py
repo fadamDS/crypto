@@ -87,3 +87,7 @@ def test_engineer_all_features():
 
     # Same timestamps
     assert(all(asset.timestamp.values == features.timestamp.values))
+
+    # No duplicate features
+    assert(features.columns.duplicated().sum() == 0)
+    assert(asset.columns.duplicated().sum() == 0)
