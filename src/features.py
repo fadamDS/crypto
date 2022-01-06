@@ -68,7 +68,7 @@ def engineer_all_features(asset):
                               how='left')
 
     relative_cols = ['Count', 'Open', 'High', 'Low', 'Close',
-                     'Volume', 'VWAP', 'Target']
+                     'Volume', 'VWAP']
     for period in [1, 10, 30, 60]:
 
         log_features, rel_features = create_relative_features(asset,
