@@ -19,8 +19,7 @@
 
 
 ## To Do's
-- Check lagged feature leakage
-  - Target features can only be computed on previous row! not current
+- Update calculation of features based on the Target
 
 - Set up that resulting models can be applied to submission setting
   - LightGBM
