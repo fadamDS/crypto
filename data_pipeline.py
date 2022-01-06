@@ -1,5 +1,8 @@
 import os
 import pandas as pd
+import pickle
+import matplotlib.pyplot as plt
+import numpy as np
 from src.features import engineer_all_features
 from src.evaluation import purged_walked_forward_cv
 
@@ -36,6 +39,27 @@ def main(head_path='../data/gresearch/',
                                       test_size_days=40,
                                       start_date="2018-01-01 00:00:000",
                                       dadjust=1440)
+
+    # Save as info
+    with open(head_path + 'info/splits.pkl', 'wb') as f:
+        pickle.dump(splits, f)
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+
+    # Plot and save as info
+    for split in splits:
+
+        train_ts = split[0]
+        test_ts = split[1]
+        fold = split[2]
+
+        ax.plot(train_ts, np.repeat(fold, len(train_ts)),
+                color='blue', linewidth=10.0)
+        ax.plot(test_ts, np.repeat(fold, len(test_ts)),
+                color='red', linewidth=10.0)
+    ax.set_yticks(np.arange(1, 11, 1))
+    ax.set_ylabel('Fold Number')
+    fig.savefig('../data/gresearch/' + 'info/folds.png')
 
     asset_ids = asset_info.Asset_ID.values
 
