@@ -21,13 +21,14 @@ class BaseCryptoLearner():
         # Should always be with (AssetID & Timestamp)
         # Predict the learned mean
         self.predictions = []
+
         for asset in self.assets:
 
             pred = pd.DataFrame({'Asset_ID': asset,
-                                 'timestamp': X.timestamp})
+                                 'timestamp': X[X.Asset_ID == asset].timestamp})
 
             pred['prediction'] = np.repeat(
-                self.learned_mean[asset], repeats=X.shape[0])
+                self.learned_mean[asset], repeats=pred.shape[0])
             self.predictions.append(pred)
 
         self.predictions_df = pd.concat(self.predictions)
