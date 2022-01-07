@@ -19,21 +19,14 @@ def create_relative_features(asset, feature_cols, period):
 
     log_change_colnames = ['log_change_' + feature
                            + '_' + str(period) + 'min' for feature in feature_cols]
-    rel_change_colnames = ['rel_change_' + feature
-                           + '_' + str(period) + 'min' for feature in feature_cols]
 
     log_changes = np.log(asset[feature_cols] / asset[feature_cols].shift(
         period)).rename(columns=dict(zip(feature_cols, log_change_colnames)))
 
-    rel_changes = (asset[feature_cols].diff(periods=period, axis=0) / asset[feature_cols].shift(
-        period)).rename(columns=dict(zip(feature_cols, rel_change_colnames)))
-
     log_changes['timestamp'] = asset.timestamp
     log_changes['Asset_ID'] = asset.Asset_ID
-    rel_changes['timestamp'] = asset.timestamp
-    rel_changes['Asset_ID'] = asset.Asset_ID
 
-    return log_changes, rel_changes
+    return log_changes
 
 
 def create_lagged_features(asset, feature_cols, period):
@@ -73,17 +66,13 @@ def engineer_all_features(asset):
 
     for period in [1, 10, 30, 60]:
 
-        log_features, rel_features = create_relative_features(asset,
-                                                              relative_cols,
-                                                              period=period)
+        log_features = create_relative_features(
+            asset, relative_cols, period=period)
 
         features = features.merge(log_features,
                                   on=['timestamp', 'Asset_ID'],
                                   how='left')
 
-        features = features.merge(rel_features,
-                                  on=['timestamp', 'Asset_ID'],
-                                  how='left')
     # lagged features
     lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
                    'log_change_Count_1min', 'log_change_Open_1min',

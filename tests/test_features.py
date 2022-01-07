@@ -42,16 +42,9 @@ def test_relative_feature():
 
     for period in [1, 10, 30]:
 
-        log_changes, rel_changes = create_relative_features(asset,
-                                                            feature_cols,
-                                                            period)
-
-        # Check relative changes
-        test_case_1 = ((asset[feature_cols].iloc[period]
-                        - asset[feature_cols].iloc[0])
-                       / asset[feature_cols].iloc[0])
-        same = rel_changes.iloc[period, :-2].values == test_case_1.values
-        assert(all(same))
+        log_changes = create_relative_features(asset,
+                                               feature_cols,
+                                               period)
 
         # Check log changes
         test_case_2 = np.log(
