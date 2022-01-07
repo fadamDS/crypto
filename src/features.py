@@ -69,8 +69,7 @@ def engineer_all_features(asset):
 
     relative_cols = ['Count', 'Open',
                      'High', 'Low', 'Close',
-                     'Volume', 'VWAP',
-                     'prev_target']
+                     'Volume', 'VWAP']
 
     for period in [1, 10, 30, 60]:
 
@@ -86,7 +85,7 @@ def engineer_all_features(asset):
                                   on=['timestamp', 'Asset_ID'],
                                   how='left')
     # lagged features
-    lagged_cols = ["direct_return", 'log_return', "high_low_ratio",
+    lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
                    'log_change_Count_1min', 'log_change_Open_1min',
                    'log_change_High_1min', 'log_change_Low_1min',
                    'log_change_Close_1min',
