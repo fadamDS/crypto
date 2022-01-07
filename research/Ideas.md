@@ -21,9 +21,8 @@
 ## To Do's
 
 - Set up that resulting models can be applied to submission setting
-  - Fitting 
   - Updating of time series params
-  - LightGBM (no hyperparameter / other fancy stuff)
+    - Make sure that only last row is updated -> Easier for compute!
 
 - Pipeline
   - Try modelling on one split.
@@ -35,7 +34,7 @@
   - boosting
   - Simple model, e.g. ARMA
   - Combine models, learn jointly
-- Still overfitting
+- Reduce Overfitting
 
 - Adjust the missing time deltas
 
