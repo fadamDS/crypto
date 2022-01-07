@@ -17,6 +17,7 @@ data_path_raw = data_path + 'raw/'
 
 train, asset_info = load_gresearch_raw(data_path_raw)
 
+
 def test_ohlcv_features():
 
     asset = train[train.Asset_ID == 1].sort_values('timestamp')
