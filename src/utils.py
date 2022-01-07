@@ -14,6 +14,17 @@ assets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 non_train_cols = ['Target', 'Weight', 'timestamp', 'Asset_ID']
 
 
+def load_gresearch_raw(data_path):
+
+    data = pd.read_csv(data_path + 'train.csv')
+    data['timestamp'] = pd.to_datetime(data.timestamp, unit='s')
+    asset_info = pd.read_csv(data_path + 'asset_details.csv')
+    data = data.merge(asset_info[['Asset_ID', 'Weight']],
+                      on='Asset_ID', how='left')
+
+    return data, asset_info
+
+
 def load_klines(path, colnames):
 
     data = pd.read_csv(path, names=colnames)
