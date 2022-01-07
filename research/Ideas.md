@@ -19,10 +19,11 @@
 
 
 ## To Do's
-- Update calculation of features based on the Target
 
 - Set up that resulting models can be applied to submission setting
-  - LightGBM
+  - Fitting 
+  - Updating of time series params
+  - LightGBM (no hyperparameter / other fancy stuff)
 
 - Pipeline
   - Try modelling on one split.
@@ -34,6 +35,7 @@
   - boosting
   - Simple model, e.g. ARMA
   - Combine models, learn jointly
+- Still overfitting
 
 - Adjust the missing time deltas
 
