@@ -59,7 +59,8 @@ def main(head_path='../data/gresearch/',
                 color='red', linewidth=10.0)
     ax.set_yticks(np.arange(1, 11, 1))
     ax.set_ylabel('Fold Number')
-    fig.savefig('../data/gresearch/' + 'info/folds.png')
+    plt.tight_layout()
+    fig.savefig(head_path + 'info/folds.png')
 
     asset_ids = asset_info.Asset_ID.values
 
@@ -101,6 +102,9 @@ def main(head_path='../data/gresearch/',
             # Save Full Data
             train_df.to_pickle(f'{fold_path}/train/{asset_name}.pkl')
             test_df.to_pickle(f'{fold_path}/test/{asset_name}.pkl')
+
+    pd.DataFrame({'colname': train_df.columns}).to_csv(head_path
+                                                       + 'info/colnames.csv')
 
 
 if __name__ == '__main__':
