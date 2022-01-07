@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from src.utils import load_gresearch_raw
 from src.features import (create_ohlcv_features,
                           create_relative_features,
                           create_lagged_features,
@@ -12,13 +13,9 @@ col_order = ['Target', 'Weight', 'timestamp',
              'Low', 'Close', 'Volume', 'VWAP']
 
 data_path = "data/gresearch/"
-train = pd.read_csv(data_path + 'raw/train.csv')
-train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
-asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
-assets = list(asset_info.Asset_ID)
-train = train.merge(asset_info[['Asset_ID', 'Weight']],
-                    on='Asset_ID', how='left')[col_order]
+data_path_raw = data_path + 'raw/'
 
+train, asset_info = load_gresearch_raw(data_path_raw)
 
 def test_ohlcv_features():
 

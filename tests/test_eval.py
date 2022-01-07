@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from src.evaluation import corr_score, purged_walked_forward_cv, score_model
 from src.models import BaseCryptoLearner
-from src.utils import recreate_gresearch_target, load_fold
+from src.utils import recreate_gresearch_target, load_fold, load_gresearch_raw
 
 
 # Constants
@@ -11,12 +11,9 @@ col_order = ['Target', 'Weight', 'timestamp', 'Asset_ID', 'Count',
              'Low', 'Close', 'Volume', 'VWAP']
 
 data_path = "data/gresearch/"
-train = pd.read_csv(data_path + 'raw/train.csv')
-train['timestamp'] = pd.to_datetime(train.timestamp, unit='s')
-asset_info = pd.read_csv(data_path + 'raw/asset_details.csv')
-assets = list(asset_info.Asset_ID)
-train = train.merge(asset_info[['Asset_ID', 'Weight']],
-                    on='Asset_ID', how='left')[col_order]
+data_path_raw = data_path + 'raw/'
+
+train, asset_info = load_gresearch_raw(data_path_raw)
 
 
 def test_corr_score():
