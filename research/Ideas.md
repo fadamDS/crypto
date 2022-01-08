@@ -21,8 +21,8 @@
 ## To Do's
 
 - Set up that resulting models can be applied to submission setting
-  - Updating of time series params
-    - Make sure that only last row is updated -> Easier for compute!
+  - Reduce overall time to less than 0.25s for each submission iteration
+  - Needs smarter feature engineering 
 
 - Pipeline
   - Try modelling on one split.
