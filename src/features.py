@@ -44,6 +44,41 @@ def create_lagged_features(asset, feature_cols, period):
     return lagged_features
 
 
+def create_rolling_features(asset,
+                            func,
+                            feature_cols,
+                            period,
+                            quantile=None):
+
+    assert(func in ['mean', 'median', 'std', 'quantile'])
+    assert(period > 0)
+
+    feature_colnames = ['rolling_' + func + '_' + feature
+                        + '_' + str(period) + 'min' for feature in feature_cols]
+    if func == 'mean':
+        features = asset[feature_cols].rolling(
+            period, min_periods=period, axis=0).mean()
+    elif func == 'median':
+        features = asset[feature_cols].rolling(
+            period, min_periods=period, axis=0).median()
+    elif func == 'std':
+        features = asset[feature_cols].rolling(
+            period, min_periods=period, axis=0).std()
+    elif func == 'quantile':
+        features = asset[feature_cols].rolling(
+            period, min_periods=period, axis=0).median()
+        feature_colnames = [str(quantile) + '_'
+                            + col for col in feature_colnames]
+
+    features = features.rename(columns=dict(
+        zip(feature_cols, feature_colnames)))
+
+    features['timestamp'] = asset.timestamp
+    features['Asset_ID'] = asset.Asset_ID
+
+    return features
+
+
 def engineer_all_features(asset):
 
     # Ensure sorting
@@ -64,7 +99,7 @@ def engineer_all_features(asset):
                      'High', 'Low', 'Close',
                      'Volume', 'VWAP']
 
-    for period in [1, 10, 30, 60]:
+    for period in [1, 60]:
 
         log_features = create_relative_features(
             asset, relative_cols, period=period)
