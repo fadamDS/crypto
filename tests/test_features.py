@@ -4,6 +4,7 @@ from src.utils import load_gresearch_raw
 from src.features import (create_ohlcv_features,
                           create_relative_features,
                           create_lagged_features,
+                          create_rolling_features,
                           engineer_all_features)
 
 
@@ -66,6 +67,23 @@ def test_lagged_features():
         same = (features.iloc[period, :
                               - 2].values == asset[feature_cols].iloc[0].values)
         assert(all(same))
+
+
+def test_rolling_features():
+
+    asset = pd.DataFrame({'value': np.arange(1, 101, 1),
+                          'timestamp': np.arange(1, 101, 1),
+                          'Asset_ID': np.repeat(999, 100)
+                          })
+
+    for period in [5, 10, 30]:
+        roll1 = create_rolling_features(asset, 'mean', ['value'], period)
+        name1 = f'rolling_mean_value_{period}min'
+        assert(roll1[name1].iloc[period-1]
+               == asset.value.iloc[:period].mean())
+
+        #roll3 = create_rolling_features(asset, 'median', ['value'], period)
+        #roll1 = create_rolling_features(asset, 'mean', ['value'], period)
 
 
 def test_engineer_all_features():
