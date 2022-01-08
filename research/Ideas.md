@@ -22,10 +22,11 @@
 
 - Set up that resulting models can be applied to submission setting
   - Reduce overall time to less than 0.25s for each submission iteration
-  - Needs smarter feature engineering 
+  - Needs smarter feature engineering
 
 - Pipeline
   - Try modelling on one split.
+  - To numpy! & Faster feature generation!!
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
   - Vola
   - Rolling averages etc.
