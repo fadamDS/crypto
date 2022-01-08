@@ -95,33 +95,4 @@ def engineer_all_features(asset):
                               on=['timestamp', 'Asset_ID'],
                               how='left')
 
-    relative_cols = ['Count', 'Open',
-                     'High', 'Low', 'Close',
-                     'Volume', 'VWAP']
-
-    for period in [1, 60]:
-
-        log_features = create_relative_features(
-            asset, relative_cols, period=period)
-
-        features = features.merge(log_features,
-                                  on=['timestamp', 'Asset_ID'],
-                                  how='left')
-
-    # lagged features
-    lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
-                   'log_change_Count_1min', 'log_change_Open_1min',
-                   'log_change_High_1min', 'log_change_Low_1min',
-                   'log_change_Close_1min',
-                   'log_change_Volume_1min', 'log_change_VWAP_1min']
-
-    for period in [1, 2, 3, 4, 5]:
-        lagged_features = create_lagged_features(features,
-                                                 feature_cols=lagged_cols,
-                                                 period=period)
-
-        features = features.merge(lagged_features,
-                                  on=['timestamp', 'Asset_ID'],
-                                  how='left')
-
     return features, features.columns[2:]
