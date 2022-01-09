@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from src.features import engineer_all_features
 from src.evaluation import purged_walked_forward_cv
+from src.utils import load_gresearch_raw
 
 
 def main(head_path='../data/gresearch/',
@@ -20,16 +21,7 @@ def main(head_path='../data/gresearch/',
     if log:
         print('Loading data')
 
-    data = pd.read_csv(raw_data_dir + 'train.csv')
-
-    asset_info = pd.read_csv(
-        raw_data_dir + 'asset_details.csv').sort_values('Asset_ID')
-
-    data['timestamp'] = pd.to_datetime(data.timestamp, unit='s')
-
-    data = data.merge(asset_info[['Asset_ID', 'Weight']],
-                      on='Asset_ID',
-                      how='left')[col_order]
+    data, asset_info = load_gresearch_raw(raw_data_dir)
 
     # Get splits
     print('Getting Splits')
@@ -74,7 +66,7 @@ def main(head_path='../data/gresearch/',
 
         asset = data[data.Asset_ID == asset_id]
 
-        features, _ = engineer_all_features(asset)
+        features = engineer_all_features(asset)
 
         asset_full = asset.merge(features,
                                  on=['timestamp', 'Asset_ID'])
