@@ -83,17 +83,15 @@ def engineer_all_features(asset):
 
     # Ensure sorting
     asset = asset.sort_values('timestamp')
-    assert(
-        all((asset.timestamp.diff() > pd.to_timedelta('00:00:00')).values[1:]))
+    #assert(
+    #    all((asset.timestamp.diff() > pd.to_timedelta('00:00:00')).values[1:]))
 
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
 
     ohlcv_features = create_ohlcv_features(asset)
-
-    features = features.merge(ohlcv_features,
-                              on=['timestamp', 'Asset_ID'],
-                              how='left')
+    for col in ohlcv_features.columns:
+        features[col] = ohlcv_features[col]
 
     relative_cols = ['Count', 'Open',
                      'High', 'Low', 'Close',
@@ -103,10 +101,8 @@ def engineer_all_features(asset):
 
         log_features = create_relative_features(
             asset, relative_cols, period=period)
-
-        features = features.merge(log_features,
-                                  on=['timestamp', 'Asset_ID'],
-                                  how='left')
+        for col in log_features.columns:
+            features[col] = log_features[col]
 
     # lagged features
     lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
@@ -119,9 +115,7 @@ def engineer_all_features(asset):
         lagged_features = create_lagged_features(features,
                                                  feature_cols=lagged_cols,
                                                  period=period)
+        for col in lagged_features.columns:
+            features[col] = lagged_features[col]
 
-        features = features.merge(lagged_features,
-                                  on=['timestamp', 'Asset_ID'],
-                                  how='left')
-
-    return features, features.columns[2:]
+    return features
