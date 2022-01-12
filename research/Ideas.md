@@ -19,10 +19,10 @@
 
 
 ## To Do's
-
-- Set up that resulting models can be applied to submission setting
-  - Reduce overall time to less than 0.25s for each submission iteration
-  - Needs smarter feature engineering
+Submission error:
+  - Create features for all assets (even if not in test_df)
+    - Either way has to be forward filled
+  - Then run predict on the resulting df. 
 
 - Pipeline
   - Try modelling on one split.
