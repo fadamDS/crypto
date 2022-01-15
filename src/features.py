@@ -83,7 +83,10 @@ def engineer_all_features(asset,
                           relative_cols,
                           relative_periods,
                           lagged_cols,
-                          lagged_periods):
+                          lagged_periods,
+                          rolling_cols,
+                          rolling_periods
+                          ):
 
     # Ensure sorting
     asset = asset.sort_values('timestamp')
@@ -95,6 +98,7 @@ def engineer_all_features(asset,
     for col in ohlcv_features.columns:
         features[col] = ohlcv_features[col]
 
+    # relative
     for period in relative_periods:
 
         log_features = create_relative_features(
@@ -102,12 +106,35 @@ def engineer_all_features(asset,
         for col in log_features.columns:
             features[col] = log_features[col]
 
+    # Lagged
     for period in lagged_periods:
         lagged_features = create_lagged_features(features,
                                                  feature_cols=lagged_cols,
                                                  period=period)
         for col in lagged_features.columns:
             features[col] = lagged_features[col]
+
+    # Rolling
+    for period in rolling_periods:
+        for fun in ['mean', 'median', 'std']:
+            rolling_features = create_rolling_features(features,
+                                                       fun,
+                                                       rolling_cols,
+                                                       period,
+                                                       quantile=None)
+
+            for col in rolling_features.columns:
+                features[col] = rolling_features[col]
+
+        for q in [0.1, 0.25, 0.75, 0.9]:
+            rolling_features = create_rolling_features(asset,
+                                                       'quantile',
+                                                       rolling_cols,
+                                                       period,
+                                                       quantile=q)
+
+            for col in rolling_features.columns:
+                features[col] = rolling_features[col]
 
     return features
 
