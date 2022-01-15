@@ -185,4 +185,4 @@ def fast_engineer_all_features(asset,
 
     current_features = np.array(current_features).reshape(1, -1)
 
-    return current_features
+    return current_features.reshape(1, -1)
