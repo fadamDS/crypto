@@ -20,14 +20,15 @@
 
 ## To Do's
 Submission error:
-  - Create features for all assets (even if not in test_df)
-    - Either way has to be forward filled
-  - Then run predict on the resulting df. 
+- Most likely to be within the "pre-feature" engineering
+- from the filtering
+- Check whether something can be done, e.g. using the first timestamp from the first iteration
+
 
 - Pipeline
   - Try modelling on one split.
-  - To numpy! & Faster feature generation!!
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
+  - Add fast feature genartion to code.
   - Vola
   - Rolling averages etc.
 - Model
