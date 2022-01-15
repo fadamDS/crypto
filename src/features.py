@@ -5,7 +5,7 @@ import numpy as np
 def create_ohlcv_features(asset):
 
     features = asset[['timestamp', 'Asset_ID', 'Count',
-                       'Open', 'High', 'Low', 'Close',
+                      'Open', 'High', 'Low', 'Close',
                       'Volume', 'VWAP']].copy()
     features['direct_return'] = (asset.Close - asset.Open) / asset.Open
     features['log_return'] = np.log(asset.Close / asset.Open)
@@ -83,8 +83,6 @@ def engineer_all_features(asset):
 
     # Ensure sorting
     asset = asset.sort_values('timestamp')
-    #assert(
-    #    all((asset.timestamp.diff() > pd.to_timedelta('00:00:00')).values[1:]))
 
     features = pd.DataFrame({'timestamp': asset.timestamp,
                              'Asset_ID': asset.Asset_ID})
@@ -119,3 +117,42 @@ def engineer_all_features(asset):
             features[col] = lagged_features[col]
 
     return features
+
+
+def fast_ohlcv_features(df, out_features):
+
+    out_features[0] = df['Count']
+    out_features[1] = df['Open']
+    out_features[2] = df['High']
+    out_features[3] = df['Low']
+    out_features[4] = df['Close']
+    out_features[5] = df['Volume']
+    out_features[6] = df['VWAP']
+    out_features[7] = (df.Close - df.Open) / df.Open
+    out_features[8] = (np.log(df.Close / df.Open))
+    out_features[9] = (df.High / df.Low)
+
+    return out_features
+
+
+# Relative change features
+def fast_relative_features(feature_array, columns, period, out_features):
+
+    for j in columns:
+
+        value = np.log(feature_array[0, j]
+                       / feature_array[-period, j])
+        i = np.min(np.where(np.isnan(out_features)))
+        out_features[i] = value
+
+    return out_features
+
+
+def fast_lagged_features(feature_array, columns, period, out_features):
+
+    for j in columns:
+        value = feature_array[-period, j]
+        i = np.min(np.where(np.isnan(out_features)))
+        out_features[i] = value
+
+    return out_features
