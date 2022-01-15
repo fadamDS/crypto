@@ -1,0 +1,13 @@
+relative_cols = ['Count', 'Open',
+                 'High', 'Low', 'Close',
+                 'Volume', 'VWAP']
+
+relative_periods = [1, 60]
+
+lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
+               'log_change_Count_1min', 'log_change_Open_1min',
+               'log_change_High_1min', 'log_change_Low_1min',
+               'log_change_Close_1min',
+               'log_change_Volume_1min', 'log_change_VWAP_1min']
+
+lagged_periods = [1, 2, 3, 4, 5]
