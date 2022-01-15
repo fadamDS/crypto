@@ -6,7 +6,8 @@ from src.features import (create_ohlcv_features,
                           create_lagged_features,
                           create_rolling_features,
                           engineer_all_features,
-                          fast_ohlcv_features)
+                          fast_ohlcv_features,
+                          fast_engineer_all_features)
 from src.settings import (relative_cols, relative_periods,
                           lagged_cols, lagged_periods)
 
@@ -116,3 +117,28 @@ def test_fast_ohlcv_features():
     fast = fast_ohlcv_features(btc, np.repeat(np.nan, 10))
 
     assert(np.all(normal == fast))
+
+
+def test_fast_engineer_all_features():
+
+    asset = train[train.Asset_ID == 1].iloc[-70:]
+
+    features = engineer_all_features(asset,
+                                     relative_cols,
+                                     relative_periods,
+                                     lagged_cols,
+                                     lagged_periods).iloc[:, 2:]
+    feature_names = features.columns
+    test_case = features.values[-1]
+    feature_array = features.values[:-1]
+    feature_array = features.values[:-1]
+
+    fast_features = fast_engineer_all_features(asset.iloc[-1],
+                                               feature_array,
+                                               feature_names,
+                                               relative_cols,
+                                               relative_periods,
+                                               lagged_cols,
+                                               lagged_periods)[0]
+
+    assert(np.all(fast_features == test_case))
