@@ -4,9 +4,9 @@ import numpy as np
 
 def create_ohlcv_features(asset):
 
-    features = pd.DataFrame({'timestamp': asset.timestamp,
-                             'Asset_ID': asset.Asset_ID})
-
+    features = asset[['timestamp', 'Asset_ID', 'Count',
+                       'Open', 'High', 'Low', 'Close',
+                      'Volume', 'VWAP']].copy()
     features['direct_return'] = (asset.Close - asset.Open) / asset.Open
     features['log_return'] = np.log(asset.Close / asset.Open)
     features['high_low_ratio'] = asset.High / asset.Low
