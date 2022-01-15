@@ -9,7 +9,9 @@ from src.features import (create_ohlcv_features,
                           fast_ohlcv_features,
                           fast_engineer_all_features)
 from src.settings import (relative_cols, relative_periods,
-                          lagged_cols, lagged_periods)
+                          lagged_cols, lagged_periods,
+                          rolling_cols,
+                          rolling_periods)
 
 
 # Constants
@@ -95,7 +97,9 @@ def test_engineer_all_features():
                                      relative_cols,
                                      relative_periods,
                                      lagged_cols,
-                                     lagged_periods)
+                                     lagged_periods,
+                                     rolling_cols,
+                                     rolling_periods)
 
     # Same length
     assert(features.shape[0] == asset.shape[0])
@@ -127,7 +131,9 @@ def test_fast_engineer_all_features():
                                      relative_cols,
                                      relative_periods,
                                      lagged_cols,
-                                     lagged_periods).iloc[:, 2:]
+                                     lagged_periods,
+                                     rolling_cols,
+                                     rolling_periods).iloc[:, 2:]
     feature_names = features.columns
     test_case = features.values[-1]
     feature_array = features.values[:-1]
@@ -139,6 +145,8 @@ def test_fast_engineer_all_features():
                                                relative_cols,
                                                relative_periods,
                                                lagged_cols,
-                                               lagged_periods)[0]
+                                               lagged_periods,
+
+                                               )[0]
 
     assert(np.all(fast_features == test_case))
