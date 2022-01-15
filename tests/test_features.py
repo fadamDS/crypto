@@ -5,7 +5,8 @@ from src.features import (create_ohlcv_features,
                           create_relative_features,
                           create_lagged_features,
                           create_rolling_features,
-                          engineer_all_features)
+                          engineer_all_features,
+                          fast_ohlcv_features)
 from src.settings import (relative_cols, relative_periods,
                           lagged_cols, lagged_periods)
 
@@ -84,9 +85,6 @@ def test_rolling_features():
         assert(roll1[name1].iloc[period-1]
                == asset.value.iloc[:period].mean())
 
-        #roll3 = create_rolling_features(asset, 'median', ['value'], period)
-        #roll1 = create_rolling_features(asset, 'mean', ['value'], period)
-
 
 def test_engineer_all_features():
 
@@ -107,3 +105,14 @@ def test_engineer_all_features():
     # No duplicate features
     assert(features.columns.duplicated().sum() == 0)
     assert(asset.columns.duplicated().sum() == 0)
+
+
+def test_fast_ohlcv_features():
+
+    btc = train[train.Asset_ID == 1].iloc[0]
+
+    normal = create_ohlcv_features(btc).iloc[2:].values
+
+    fast = fast_ohlcv_features(btc, np.repeat(np.nan, 10))
+
+    assert(np.all(normal == fast))
