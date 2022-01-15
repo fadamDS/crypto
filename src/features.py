@@ -79,7 +79,11 @@ def create_rolling_features(asset,
     return features
 
 
-def engineer_all_features(asset):
+def engineer_all_features(asset,
+                          relative_cols,
+                          relative_periods,
+                          lagged_cols,
+                          lagged_periods):
 
     # Ensure sorting
     asset = asset.sort_values('timestamp')
@@ -91,25 +95,14 @@ def engineer_all_features(asset):
     for col in ohlcv_features.columns:
         features[col] = ohlcv_features[col]
 
-    relative_cols = ['Count', 'Open',
-                     'High', 'Low', 'Close',
-                     'Volume', 'VWAP']
-
-    for period in [1, 60]:
+    for period in relative_periods:
 
         log_features = create_relative_features(
             asset, relative_cols, period=period)
         for col in log_features.columns:
             features[col] = log_features[col]
 
-    # lagged features
-    lagged_cols = ['direct_return', 'log_return', 'high_low_ratio',
-                   'log_change_Count_1min', 'log_change_Open_1min',
-                   'log_change_High_1min', 'log_change_Low_1min',
-                   'log_change_Close_1min',
-                   'log_change_Volume_1min', 'log_change_VWAP_1min']
-
-    for period in [1, 2, 3, 4, 5]:
+    for period in lagged_periods:
         lagged_features = create_lagged_features(features,
                                                  feature_cols=lagged_cols,
                                                  period=period)
