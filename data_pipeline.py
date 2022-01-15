@@ -7,7 +7,8 @@ from src.features import engineer_all_features
 from src.evaluation import purged_walked_forward_cv
 from src.utils import load_gresearch_raw
 from src.settings import (relative_cols, relative_periods,
-                          lagged_cols, lagged_periods)
+                          lagged_cols, lagged_periods,
+                          rolling_cols, rolling_periods)
 
 
 def main(head_path='../data/gresearch/',
@@ -67,7 +68,9 @@ def main(head_path='../data/gresearch/',
                                          relative_cols,
                                          relative_periods,
                                          lagged_cols,
-                                         lagged_periods)
+                                         lagged_periods,
+                                         rolling_cols,
+                                         rolling_periods)
 
         asset_full = asset.merge(features,
                                  on=['timestamp', 'Asset_ID'])
