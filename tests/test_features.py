@@ -6,6 +6,8 @@ from src.features import (create_ohlcv_features,
                           create_lagged_features,
                           create_rolling_features,
                           engineer_all_features)
+from src.settings import (relative_cols, relative_periods,
+                          lagged_cols, lagged_periods)
 
 
 # Constants
@@ -90,7 +92,11 @@ def test_engineer_all_features():
 
     asset = train[train.Asset_ID == 1]
 
-    features = engineer_all_features(asset)
+    features = engineer_all_features(asset,
+                                     relative_cols,
+                                     relative_periods,
+                                     lagged_cols,
+                                     lagged_periods)
 
     # Same length
     assert(features.shape[0] == asset.shape[0])
