@@ -133,7 +133,7 @@ def fast_relative_features(feature_array, columns, period, out_features):
 
     for j in columns:
 
-        value = np.log(feature_array[0, j]
+        value = np.log(out_features[j]
                        / feature_array[-period, j])
         i = np.min(np.where(np.isnan(out_features)))
         out_features[i] = value
@@ -149,3 +149,40 @@ def fast_lagged_features(feature_array, columns, period, out_features):
         out_features[i] = value
 
     return out_features
+
+
+def fast_engineer_all_features(asset,
+                               asset_features,
+                               feature_names,
+                               relative_cols,
+                               relative_periods,
+                               lagged_cols,
+                               lagged_periods):
+
+    # Initialize new feature array
+    current_features = np.repeat(np.nan,
+                                 repeats=asset_features.shape[1])
+
+    current_features = fast_ohlcv_features(asset, current_features)
+
+    # Relative change features
+    for period in relative_periods:
+        current_features = fast_relative_features(asset_features,
+                                                  columns=np.where(
+                                                      np.isin(feature_names,
+                                                              relative_cols))[0],
+                                                  period=period,
+                                                  out_features=current_features)
+
+    # Lagged features
+    for period in lagged_periods:
+        current_features = fast_lagged_features(asset_features,
+                                                np.where(np.isin(feature_names,
+                                                                 lagged_cols))[
+                                                         0],
+                                                period=period,
+                                                out_features=current_features)
+
+    current_features = np.array(current_features).reshape(1, -1)
+
+    return current_features
