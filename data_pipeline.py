@@ -6,17 +6,14 @@ import numpy as np
 from src.features import engineer_all_features
 from src.evaluation import purged_walked_forward_cv
 from src.utils import load_gresearch_raw
+from src.settings import (relative_cols, relative_periods,
+                          lagged_cols, lagged_periods)
 
 
 def main(head_path='../data/gresearch/',
          log=True):
 
     raw_data_dir = head_path + 'raw/'
-
-    col_order = ['Target', 'Weight',
-                 'timestamp', 'Asset_ID',
-                 'Count', 'Open', 'High',
-                 'Low', 'Close', 'Volume', 'VWAP']
 
     if log:
         print('Loading data')
@@ -66,7 +63,11 @@ def main(head_path='../data/gresearch/',
 
         asset = data[data.Asset_ID == asset_id]
 
-        features = engineer_all_features(asset)
+        features = engineer_all_features(asset,
+                                         relative_cols,
+                                         relative_periods,
+                                         lagged_cols,
+                                         lagged_periods)
 
         asset_full = asset.merge(features,
                                  on=['timestamp', 'Asset_ID'])
