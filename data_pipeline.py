@@ -72,7 +72,7 @@ def main(head_path='../data/gresearch/',
             test_ts = split[1]
             fold = split[2]
 
-            start_time = train_ts[0] + pd.to_timedelta(max_lookback_minutes*60,
+            start_time = train_ts[0] - pd.to_timedelta(max_lookback_minutes*60,
                                                        unit='s')
             end_time = test_ts[-1]
 
@@ -88,6 +88,7 @@ def main(head_path='../data/gresearch/',
             asset_current_split = full_ts.merge(asset_current_split,
                                                 on=['timestamp'],
                                                 how='left')
+
             if asset_current_split.isna().any().any():
                 print(
                     f'Forward filling {asset_current_split.Close.isna().sum()} rows')
