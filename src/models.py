@@ -80,13 +80,14 @@ class CryptoDART():
             print('Running test')
             results_list = []
             for asset_id in self.assets:
-
+                print(asset_id)
                 lgb_test = self.data[asset_id]['lgb_test']
                 dart = self.models[asset_id]
                 predictions = dart.predict(lgb_test.data)
+                target = lgb_test.label['Target'].values
 
                 result = pd.DataFrame(
-                    {'prediction': predictions, 'target': lgb_test.label})
+                    {'prediction': predictions, 'target': target})
                 result['Asset_ID'] = asset_id
                 result['Weight'] = self.weights[asset_id]
                 results_list.append(result)
