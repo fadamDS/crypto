@@ -9,7 +9,8 @@ from src.utils import load_gresearch_raw
 from src.settings import (relative_cols, relative_periods,
                           lagged_cols, lagged_periods,
                           rolling_cols, rolling_periods,
-                          max_lookback_minutes)
+                          max_lookback_minutes,
+                          non_train_cols)
 
 
 def main(head_path='../data/gresearch/',
@@ -109,7 +110,7 @@ def main(head_path='../data/gresearch/',
                                              rolling_cols,
                                              rolling_periods)
 
-            asset_current_split = asset_current_split[['timestamp', 'Asset_ID', 'forward_filled']].merge(
+            asset_current_split = asset_current_split[non_train_cols].merge(
                 features, on=['timestamp', 'Asset_ID'])
 
             train_df = asset_current_split[asset_current_split.timestamp.isin(
