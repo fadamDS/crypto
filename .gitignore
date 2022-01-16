@@ -5,5 +5,7 @@ data/*
 .RData
 .Rhistory
 *.Rproj*
+models/
+experiments/
 
 __pycache__
