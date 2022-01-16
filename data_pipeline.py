@@ -93,6 +93,11 @@ def main(head_path='../data/gresearch/',
                 print(
                     f'Forward filling {asset_current_split.Close.isna().sum()} rows')
 
+            # Make a forward filled flag for evaluation
+            asset_current_split['forward_filled'] = False
+            asset_current_split.loc[asset_current_split.Close.isna(
+            ), 'forward_filled'] = True
+
             asset_current_split = asset_current_split.fillna(method='ffill',
                                                              axis=0)
 
@@ -104,7 +109,7 @@ def main(head_path='../data/gresearch/',
                                              rolling_cols,
                                              rolling_periods)
 
-            asset_current_split = asset_current_split[['timestamp', 'Asset_ID']].merge(
+            asset_current_split = asset_current_split[['timestamp', 'Asset_ID', 'forward_filled']].merge(
                 features, on=['timestamp', 'Asset_ID'])
 
             train_df = asset_current_split[asset_current_split.timestamp.isin(
