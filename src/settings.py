@@ -1,10 +1,38 @@
 import numpy as np
 
+assets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
-non_train_cols = ['Target', 'Weight', 'timestamp',
-                  'Asset_ID', 'Count', 'Open',
-                  'High', 'Low', 'Close',
-                  'Volume', 'VWAP']
+weights = {2: 2.3978952727983707,
+           0: 4.30406509320417,
+           1: 6.779921907472252,
+           5: 1.3862943611198906,
+           7: 2.079441541679836,
+           6: 5.8944028342648505,
+           9: 2.3978952727983707,
+           11: 1.6094379124341005,
+           13: 1.791759469228055,
+           12: 2.079441541679836,
+           3: 4.406719247264253,
+           8: 1.0986122886681098,
+           10: 1.0986122886681098,
+           4: 3.555348061489413}
+
+names = {2: 'Bitcoin_Cash',
+         0: 'Binance_Coin',
+         1: 'Bitcoin',
+         5: 'EOS.IO',
+         7: 'Ethereum_Classic',
+         6: 'Ethereum',
+         9: 'Litecoin',
+         11: 'Monero',
+         13: 'TRON',
+         12: 'Stellar',
+         3: 'Cardano',
+         8: 'IOTA',
+         10: 'Maker',
+         4: 'Dogecoin'}
+
+non_train_cols = ['Target', 'Weight', 'timestamp', 'Asset_ID']
 
 relative_cols = ['Count', 'Open',
                  'High', 'Low', 'Close',
@@ -44,7 +72,22 @@ rolling_cols = ['log_return',
 rolling_periods = [15, 30, 90, 180, 360]
 
 max_lookback_minutes = np.max(
-                              np.concatenate((lagged_periods,
-                                              relative_periods,
-                                              rolling_periods))
-                              )
+                  np.concatenate((lagged_periods,
+                                  relative_periods,
+                                  rolling_periods))
+                  )
+
+dart_base_params = {'objective': 'mae',
+                    'boosting': 'dart',
+                    'num_iterations': 200,
+                    'learning_rate': 0.1,
+                    'num_leaves': 20,
+                    'tree_learner': 'feature',
+                    'num_threads': 2,
+                    'max_depth': 40,
+                    'min_data_in_leaf': 40,
+                    'feature_fraction': 0.8,
+                    'lambda_l1': 0.01,
+                    'lambda_l2': 0.01,
+                    'drop_rate': 0.15,
+                    'skip_drop': 0.5}
