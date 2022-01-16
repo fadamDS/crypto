@@ -91,8 +91,8 @@ def main(head_path='../data/gresearch/',
                                                 how='left')
 
             if asset_current_split.isna().any().any():
-                print(
-                    f'Forward filling {asset_current_split.Close.isna().sum()} rows')
+                missing_closes = asset_current_split.Close.isna().sum()
+                print(f'Forward filling {missing_closes} closes')
 
             # Make a forward filled flag for evaluation
             asset_current_split['forward_filled'] = False
