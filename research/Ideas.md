@@ -17,34 +17,28 @@
 - target is the individual return minus the beta times the market return
 - Finally: Score is weighted Pearson correlation coefficient between target and actual
 
+# Score Tracker
+- 0.026 btc fold 9
 
 ## To Do's
-Submission error:
-- Most likely to be within the "pre-feature" engineering
-- from the filtering
-- Check whether something can be done, e.g. using the first timestamp from the first iteration
-
+- Model
+  - Build model class
+  - LGBM with default params for each coin
+  - Each separately and then use models for each coin in submission.
 
 - Pipeline
-  - Try modelling on one split.
+  - Use model class on each fold and properly score
+  
+- Submission error:
+  - Check whether something can be done to avoid empty warm up period
+
+### Backlog
 - Features -> Make features on whole dataset (e.g lagged, EWMA)
-  - Add fast feature genartion to code.
-  - Vola
-  - Rolling averages etc.
+  - Time features
+  - Transforms (e.g. fft)
+
 - Model
   - Single model vs. model for each coin
-  - boosting
+  - Deep Learning models
   - Simple model, e.g. ARMA
   - Combine models, learn jointly
-- Reduce Overfitting
-
-- Adjust the missing time deltas
-
-## Modelling
-- Ensembles of simple models
-- XGB, LGBM, etc..
-- Throw many simple models at it, join them in a smart way potentially
-- Some smart feature engineering!
-  - Lagged features
-  - Market features
-  - Modelled Vola
