@@ -8,7 +8,8 @@ from src.evaluation import purged_walked_forward_cv
 from src.utils import load_gresearch_raw
 from src.settings import (relative_cols, relative_periods,
                           lagged_cols, lagged_periods,
-                          rolling_cols, rolling_periods)
+                          rolling_cols, rolling_periods,
+                          max_lookback_minutes)
 
 
 def main(head_path='../data/gresearch/',
@@ -60,33 +61,55 @@ def main(head_path='../data/gresearch/',
 
         asset_name = (asset_info[asset_info.Asset_ID == asset_id]
                       .Asset_Name.iloc[0].replace(' ', '_'))
-        print(f'Writing {asset_name}')
 
-        asset = data[data.Asset_ID == asset_id]
-
-        features = engineer_all_features(asset,
-                                         relative_cols,
-                                         relative_periods,
-                                         lagged_cols,
-                                         lagged_periods,
-                                         rolling_cols,
-                                         rolling_periods)
-
-        asset_full = asset.merge(features,
-                                 on=['timestamp', 'Asset_ID'])
-
-        # To Pickle
-        asset_full.to_pickle(f'{processed_path}/full/{asset_name}.pkl')
+        asset_full = data[data.Asset_ID == asset_id]
+        print(f'Working on {asset_name}')
 
         # Save splits
-        print(f'Writing splits for {asset_name}')
         for split in splits:
+
             train_ts = split[0]
             test_ts = split[1]
             fold = split[2]
 
-            train_df = asset_full[asset_full.timestamp.isin(train_ts)]
-            test_df = asset_full[asset_full.timestamp.isin(test_ts)]
+            start_time = train_ts[0] + pd.to_timedelta(max_lookback_minutes*60,
+                                                       unit='s')
+            end_time = test_ts[-1]
+
+            print(f'Features for split {fold} for {asset_name}')
+            asset_current_split = asset_full[(asset_full.timestamp >= start_time)
+                                             & (asset_full.timestamp <= end_time)]
+
+            # Make whole time series and forward fill if missing
+            full_ts = pd.date_range(start=start_time, end=end_time,
+                                    freq='min')
+
+            full_ts = pd.DataFrame({'timestamp': full_ts})
+            asset_current_split = full_ts.merge(asset_current_split,
+                                                on=['timestamp'],
+                                                how='left')
+            if asset_current_split.isna().any().any():
+                print(
+                    f'Forward filling {asset_current_split.Close.isna().sum()} rows')
+
+            asset_current_split = asset_current_split.fillna(method='ffill',
+                                                             axis=0)
+
+            features = engineer_all_features(asset_current_split,
+                                             relative_cols,
+                                             relative_periods,
+                                             lagged_cols,
+                                             lagged_periods,
+                                             rolling_cols,
+                                             rolling_periods)
+
+            asset_current_split = asset_current_split.merge(
+                features, on=['timestamp', 'Asset_ID'])
+
+            train_df = asset_current_split[asset_current_split.timestamp.isin(
+                train_ts)]
+            test_df = asset_current_split[asset_current_split.timestamp.isin(
+                test_ts)]
 
             # Directory
             fold_path = f'{processed_path}/fold_{fold}'
@@ -96,6 +119,7 @@ def main(head_path='../data/gresearch/',
                 os.makedirs(fold_path + '/test')
 
             # Save Full Data
+            print(f'Saving {fold} split for {asset_name}')
             train_df.to_pickle(f'{fold_path}/train/{asset_name}.pkl')
             test_df.to_pickle(f'{fold_path}/test/{asset_name}.pkl')
 
