@@ -21,8 +21,11 @@
 - 0.026 btc fold 9
 
 ## To Do's
-- Pipeline
-  - Update fast feature to include rolling features
+- Features
+    - Check which features to add / remove based on importance
+
+- Submission:
+  - Check whether something can be done to avoid empty warm up period
 
 - Supplemental train updated & how to incorporate?
 
@@ -31,12 +34,6 @@
   - Correlation over time?
   - Hyperparameters, especially avoid overfitting
   - Deep Learning / MLP
-
-- Features
-  - Check which features to add remove based on importance
-
-- Submission:
-  - Check whether something can be done to avoid empty warm up period
 
 ### Backlog
 - Features
