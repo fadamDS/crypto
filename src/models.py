@@ -71,6 +71,24 @@ class CryptoDART():
         print(f'Training for {asset_id} done')
         print('------------\n')
 
+    def load_models(self, model_directory, prefix):
+
+        for asset_id in self.assets:
+
+            full_path = model_directory + prefix + '_' + str(asset_id) + '.txt'
+
+            dart = lgb.Booster(model_file=full_path)
+
+            self.models[asset_id] = dart
+
+    def predict_asset(self, asset_id, data):
+
+        dart = self.models[asset_id]
+
+        pred = dart.predict(data)
+
+        return pred
+
     def run_full_test(self, remove_ffil=True):
 
         if self.test_available:
@@ -112,9 +130,9 @@ class CryptoDART():
         for asset_id in self.assets:
 
             dart = self.models[asset_id]
-            name = self.names[asset_id]
+            name = str(asset_id)
 
-            save_path = save_dir + base_name + name + '.txt'
+            save_path = save_dir + base_name + '_' + name + '.txt'
             dart.save_model(save_path)
 
     def save_test_results(self, save_path):
