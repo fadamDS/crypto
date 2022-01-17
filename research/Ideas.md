@@ -21,24 +21,30 @@
 - 0.026 btc fold 9
 
 ## To Do's
-- Model
-  - Build model class
-  - LGBM with default params for each coin
-  - Each separately and then use models for each coin in submission.
-
 - Pipeline
-  - Use model class on each fold and properly score
-  
-- Submission error:
+  - Update fast feature to include rolling features
+
+- Supplemental train updated & how to incorporate?
+
+- Model
+  - Top features?
+  - Correlation over time?
+  - Hyperparameters, especially avoid overfitting
+  - Deep Learning / MLP
+
+- Features
+  - Check which features to add remove based on importance
+
+- Submission:
   - Check whether something can be done to avoid empty warm up period
 
 ### Backlog
-- Features -> Make features on whole dataset (e.g lagged, EWMA)
+- Features
   - Time features
   - Transforms (e.g. fft)
 
 - Model
+  - Combine models, learn jointly
   - Single model vs. model for each coin
   - Deep Learning models
   - Simple model, e.g. ARMA
-  - Combine models, learn jointly
