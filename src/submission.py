@@ -1,5 +1,18 @@
 import numpy as np
+import pandas as pd
+from src.settings import max_lookback_minutes
 from src.features import fast_engineer_all_features
+
+
+def make_submission_dev_data(data_dir):
+
+    data = pd.read_csv(data_dir + 'train.csv')
+    ts = data.timestamp.sort_values().unique()[-max_lookback_minutes-60:]
+    data = data[data.timestamp.isin(ts)]
+    train = data[data.timestamp.isin(ts[:-10])]
+    test = data[data.timestamp.isin(ts[-10:])]
+
+    return train, test
 
 
 def make_prediction(assets,
