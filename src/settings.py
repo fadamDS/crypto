@@ -35,6 +35,8 @@ names = {2: 'Bitcoin_Cash',
 non_train_cols = ['Target', 'Weight',
                   'timestamp', 'Asset_ID', 'forward_filled']
 
+target = 'Target'
+
 relative_cols = ['Count', 'Open',
                  'High', 'Low', 'Close',
                  'Volume', 'VWAP']
