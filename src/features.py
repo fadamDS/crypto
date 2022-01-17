@@ -229,7 +229,8 @@ def fast_engineer_all_features(asset,
                                relative_cols,
                                relative_periods,
                                lagged_cols,
-                               lagged_periods):
+                               lagged_periods,
+                               rolling_features):
 
     # Initialize new feature array
     current_features = np.repeat(np.nan,
@@ -259,10 +260,7 @@ def fast_engineer_all_features(asset,
     asset_features = np.append(asset_features[1:, :],
                                current_features.reshape(1, -1), axis=0)
 
-    # Only thing missing are rolling features
-
-    rolling_features = np.array(feature_names)[np.isnan(current_features)]
-
+    # Create rolling features
     for feature in rolling_features:
         asset_features = fast_rolling_feature(asset_features,
                                               feature,
