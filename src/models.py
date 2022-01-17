@@ -115,7 +115,7 @@ class CryptoDART():
             save_path = save_dir + base_name + name + '.txt'
             dart.save_model(save_path)
 
-    def save_test_results(self, save_path, remove_ffil=True):
+    def save_test_results(self, save_path, remove_ffil=False):
 
         pearsons = []
         perason_p_vals = []
