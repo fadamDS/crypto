@@ -74,16 +74,22 @@ class CryptoDART():
         print(f'Training for {asset_id} done')
         print('------------\n')
 
-    def run_full_test(self):
+    def run_full_test(self, remove_ffil=True):
 
         if self.test_available:
             print('Running test')
             results_list = []
             for asset_id in self.assets:
+
                 print(asset_id)
                 lgb_test = self.data[asset_id]['lgb_test']
                 dart = self.models[asset_id]
-                predictions = dart.predict(lgb_test.data)
+
+                if remove_ffil:
+                    data = lgb_test.data
+                    data = lgb_test[lgb_test.forward_filled == False]
+
+                predictions = dart.predict(data)
                 target = lgb_test.label['Target'].values
 
                 result = pd.DataFrame(
@@ -115,7 +121,7 @@ class CryptoDART():
             save_path = save_dir + base_name + name + '.txt'
             dart.save_model(save_path)
 
-    def save_test_results(self, save_path, remove_ffil=False):
+    def save_test_results(self, save_path):
 
         pearsons = []
         perason_p_vals = []
@@ -124,10 +130,6 @@ class CryptoDART():
         for asset_id in self.assets:
 
             result_data = self.results_df[self.results_df.Asset_ID == asset_id]
-
-            # Remove forward fill to avoid overestimation
-            if remove_ffil:
-                result_data = result_data[result_data.forward_filled == False]
 
             pearson_res = stats.pearsonr(
                 result_data.target, result_data.prediction)
