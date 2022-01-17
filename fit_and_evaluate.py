@@ -49,12 +49,12 @@ def main():
         cryptoDart.train()
 
         # Test
-        cryptoDart.run_full_test()
+        cryptoDart.run_full_test(remove_ffil=True)
 
         # Store model and results
         cryptoDart.save_models(model_save_dir, base_name=exp_name)
 
-        cryptoDart.save_test_results(result_save_path, remove_ffil=False)
+        cryptoDart.save_test_results(result_save_path)
 
         print(
             f'Done with fold {fold_id}, test  score {cryptoDart.test_score}')
