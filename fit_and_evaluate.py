@@ -10,7 +10,7 @@ from src.settings import (non_train_cols,
 def main():
 
     # Folds to use
-    folds = [4, 5, 6, 7, 8, 9]
+    folds = [4, 5, 6, 7, 8, 9, 10]
 
     data_head_dir = 'data/gresearch/processed/'
     exp_name = 'dart_base'
