@@ -46,10 +46,7 @@ class CryptoDART():
                 self.test_available = True
                 asset_test = test[test.Asset_ID == asset_id]
 
-                asset_lgb_test = lgb.Dataset(data=asset_test[features],
-                                             label=asset_test[target])
-
-                self.data[asset_id]['lgb_test'] = asset_lgb_test
+                self.data[asset_id]['asset_test'] = asset_test
 
         print('Data creation done')
         print('------------\n')
@@ -82,15 +79,14 @@ class CryptoDART():
             for asset_id in self.assets:
 
                 print(asset_id)
-                lgb_test = self.data[asset_id]['lgb_test']
+                data = self.data[asset_id]['asset_test']
                 dart = self.models[asset_id]
 
                 if remove_ffil:
-                    data = lgb_test.data
-                    data = lgb_test[lgb_test.forward_filled == False]
+                    data = data[data.forward_filled == False]
 
-                predictions = dart.predict(data)
-                target = lgb_test.label['Target'].values
+                predictions = dart.predict(data[self.features])
+                target = data['Target'].values
 
                 result = pd.DataFrame(
                     {'prediction': predictions, 'target': target})
