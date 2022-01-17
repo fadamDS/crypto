@@ -11,7 +11,8 @@ from src.features import (create_ohlcv_features,
 from src.settings import (relative_cols, relative_periods,
                           lagged_cols, lagged_periods,
                           rolling_cols,
-                          rolling_periods)
+                          rolling_periods,
+                          max_lookback_minutes)
 
 
 # Constants
@@ -84,14 +85,13 @@ def test_rolling_features():
 
     for period in [5, 10, 30]:
         roll1 = create_rolling_features(asset, 'mean', ['value'], period)
-        name1 = f'rolling_mean_value_{period}min'
-        assert(roll1[name1].iloc[period-1]
-               == asset.value.iloc[:period].mean())
+        name1 = f'rolling$mean$value${period}$min'
+        assert(roll1[name1].iloc[period-1] == asset.value.iloc[:period].mean())
 
 
 def test_engineer_all_features():
 
-    asset = train[train.Asset_ID == 1]
+    asset = train[train.Asset_ID == 1].iloc[-max_lookback_minutes-10:]
 
     features = engineer_all_features(asset,
                                      relative_cols,
@@ -125,7 +125,7 @@ def test_fast_ohlcv_features():
 
 def test_fast_engineer_all_features():
 
-    asset = train[train.Asset_ID == 1].iloc[-70:]
+    asset = train[train.Asset_ID == 1].iloc[-max_lookback_minutes-10:]
 
     features = engineer_all_features(asset,
                                      relative_cols,
@@ -146,7 +146,6 @@ def test_fast_engineer_all_features():
                                                relative_periods,
                                                lagged_cols,
                                                lagged_periods,
+                                               )[-1]
 
-                                               )[0]
-
-    assert(np.all(fast_features == test_case))
+    assert(np.all(np.abs(fast_features - test_case)) < 1e-10)

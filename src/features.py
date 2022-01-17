@@ -53,8 +53,8 @@ def create_rolling_features(asset,
     assert(func in ['mean', 'median', 'std', 'quantile'])
     assert(period > 0)
 
-    feature_colnames = ['rolling_' + func + '_' + feature
-                        + '_' + str(period) + 'min' for feature in feature_cols]
+    feature_colnames = ['rolling$' + func + '$' + feature
+                        + '$' + str(period) + '$min' for feature in feature_cols]
     if func == 'mean':
         features = asset[feature_cols].rolling(
             period, min_periods=period, axis=0).mean()
@@ -63,12 +63,12 @@ def create_rolling_features(asset,
             period, min_periods=period, axis=0).median()
     elif func == 'std':
         features = asset[feature_cols].rolling(
-            period, min_periods=period, axis=0).std()
+            period, min_periods=period, axis=0).std(ddof=1)
     elif func == 'quantile':
         features = asset[feature_cols].rolling(
             period, min_periods=period, axis=0).quantile(quantile)
-        feature_colnames = ['rolling_' + func + str(quantile) + '_' + feature
-                            + '_' + str(period) + 'min' for feature in feature_cols]
+        feature_colnames = ['rolling$' + func + ';' + str(quantile) + '$' + feature
+                            + '$' + str(period) + '$min' for feature in feature_cols]
 
     features = features.rename(columns=dict(
         zip(feature_cols, feature_colnames)))
@@ -178,9 +178,49 @@ def fast_lagged_features(feature_array, columns, period, out_features):
     return out_features
 
 
-def fast_rolling_features(feature_array, columns, period, out_features):
+def fast_rolling_feature(feature_array, feature, feature_names):
 
-    pass
+    # Get function parameters
+    func, variable, period, q = params_from_roll_feature_name(feature)
+
+    # Out location in array
+    i = np.where(feature_names == feature)[0][0]
+
+    # Location of the variable needed for calculation
+    j = np.where(feature_names == variable)[0][0]
+
+    if func == 'mean':
+        value = np.mean(feature_array[-period:, j])
+
+    elif func == 'median':
+        value = np.median(feature_array[-period:, j])
+
+    elif func == 'std':
+        value = np.std(feature_array[-period:, j], ddof=1)
+
+    elif func == 'quantile':
+        value = np.quantile(feature_array[-period:, j], q)
+
+    # Now it goes to the last one which is still nan
+    feature_array[-1, i] = value
+
+    return feature_array
+
+
+def params_from_roll_feature_name(feature_name):
+
+    splitted = feature_name.split('$')
+    func = splitted[1]
+    period = int(splitted[-2])
+    variable = splitted[2]
+
+    if func[:5] == 'quant':
+        q = float(func.split(';')[-1])
+        func = func.split(';')[0]
+    else:
+        q = None
+
+    return func, variable, period, q
 
 
 def fast_engineer_all_features(asset,
@@ -215,6 +255,17 @@ def fast_engineer_all_features(asset,
                                                 period=period,
                                                 out_features=current_features)
 
-    current_features = np.array(current_features).reshape(1, -1)
+    # Already set up the new feature array to calculate the rolling features
+    asset_features = np.append(asset_features[1:, :],
+                               current_features.reshape(1, -1), axis=0)
 
-    return current_features.reshape(1, -1)
+    # Only thing missing are rolling features
+
+    rolling_features = np.array(feature_names)[np.isnan(current_features)]
+
+    for feature in rolling_features:
+        asset_features = fast_rolling_feature(asset_features,
+                                              feature,
+                                              feature_names)
+
+    return asset_features
