@@ -10,7 +10,7 @@ from src.settings import (non_train_cols,
 def main():
 
     # Folds to use
-    folds = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    folds = [4, 5, 6, 7, 8, 9]
 
     data_head_dir = 'data/gresearch/processed/'
     exp_name = 'dart_base'
@@ -53,6 +53,8 @@ def main():
 
         # Store model and results
         cryptoDart.save_models(model_save_dir, base_name=exp_name)
+
+        cryptoDart.save_test_results(result_save_path, remove_ffil=False)
 
         print(
             f'Done with fold {fold_id}, test  score {cryptoDart.test_score}')
