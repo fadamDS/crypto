@@ -66,9 +66,9 @@ def create_rolling_features(asset,
             period, min_periods=period, axis=0).std()
     elif func == 'quantile':
         features = asset[feature_cols].rolling(
-            period, min_periods=period, axis=0).median()
-        feature_colnames = [str(quantile) + '_'
-                            + col for col in feature_colnames]
+            period, min_periods=period, axis=0).quantile(quantile)
+        feature_colnames = ['rolling_' + func + str(quantile) + '_' + feature
+                            + '_' + str(period) + 'min' for feature in feature_cols]
 
     features = features.rename(columns=dict(
         zip(feature_cols, feature_colnames)))
@@ -176,6 +176,11 @@ def fast_lagged_features(feature_array, columns, period, out_features):
         out_features[i] = value
 
     return out_features
+
+
+def fast_rolling_features(feature_array, columns, period, out_features):
+
+    pass
 
 
 def fast_engineer_all_features(asset,
